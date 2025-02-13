@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "readqueue"
 include(":app")
+include(":feature")
+include(":feature:myqueue")
+include(":feature:usersettings")
