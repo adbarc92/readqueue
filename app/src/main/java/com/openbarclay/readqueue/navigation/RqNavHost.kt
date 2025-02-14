@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.openbarclay.readqueue.ui.RqAppState
 
+data object MyQueueRoute
+
 @Composable
 fun RqNavHost(
     appState: RqAppState,
@@ -15,7 +17,7 @@ fun RqNavHost(
     NavHost(
         navController = navController,
         modifier = modifier,
-//        startDestination =
+        startDestination = MyQueueRoute
     ) {
 
     }
