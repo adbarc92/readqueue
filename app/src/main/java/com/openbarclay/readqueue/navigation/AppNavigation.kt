@@ -28,6 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.openbarclay.readqueue.data.db.dao.BookDao
+import com.openbarclay.readqueue.ui.home.HomeScreen
 
 data class BottomNavItem(
     val route: String,
@@ -132,7 +134,7 @@ fun AppNavigation() {
         ) {
             composable("home") {
                 Text("home")
-//                HomeScreen(navController)
+                HomeScreen()
             }
             composable("schedule") {
                 Text("schedule")
