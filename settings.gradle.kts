@@ -1,6 +1,12 @@
 pluginManagement {
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -13,8 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "readqueue"
+rootProject.name = "ReadQueue"
 include(":app")
-include(":feature")
-include(":feature:myqueue")
-include(":feature:usersettings")
+ 
