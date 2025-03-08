@@ -1,30 +1,20 @@
 package com.openbarclay.readqueue.ui.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.openbarclay.readqueue.data.db.dao.BookDao
 import com.openbarclay.readqueue.data.db.entity.Book
 import com.openbarclay.readqueue.data.db.entity.BookEntity
 import com.openbarclay.readqueue.data.db.entity.BookStatus
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BookListViewModelFactory(private val bookDao: BookDao) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BookListViewModel::class.java)) {
-            return BookListViewModel(bookDao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
-
-// FIXME: Clean this up, this crosses all sorts of boundaries.
-class BookListViewModel(private val bookDao: BookDao) : ViewModel() {
-
+@HiltViewModel
+class BookListViewModel @Inject constructor(private val bookDao: BookDao) : ViewModel() {
     // Private mutable state flow to hold the list of books
     private val _books = MutableStateFlow<List<Book>>(emptyList())
     // Public read-only state flow for UI to observe

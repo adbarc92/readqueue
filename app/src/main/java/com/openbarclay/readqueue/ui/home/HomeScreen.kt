@@ -16,17 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.openbarclay.readqueue.data.db.AppDatabase
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun HomeScreen(viewModel: BookListViewModel = viewModel(
-    factory = BookListViewModelFactory(AppDatabase.getDatabase(LocalContext.current).bookDao())
-)) {
+fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
     val books by viewModel.books.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
 
