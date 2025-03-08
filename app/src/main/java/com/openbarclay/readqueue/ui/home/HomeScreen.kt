@@ -11,8 +11,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -53,7 +55,9 @@ fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
                         BookStatusDropdown(
                             expanded = statusDropdownExpanded,
                             book = book,
-                            onDismissRequest = { statusDropdownExpanded = false }
+                            onExpandedChange = { newExpanded ->
+                                statusDropdownExpanded = newExpanded
+                            }
                         ) { newStatus ->
                             viewModel.updateStatus(
                                 book.id,
@@ -73,30 +77,40 @@ fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookStatusDropdown(
     expanded: Boolean,
     book: Book,
-    onDismissRequest: () -> Unit,
+    onExpandedChange: (Boolean) -> Unit,
     onStatusChange: (BookStatus) -> Unit,
 ) {
-    DropdownMenu(
+    ExposedDropdownMenuBox(
         expanded = expanded,
-        onDismissRequest = { onDismissRequest() }
+        onExpandedChange = onExpandedChange,
     ) {
-        BookStatus.entries.forEach { status ->
-            DropdownMenuItem(
-                text = { Text(status.name) },
-                onClick = {
-                    onStatusChange(status)
-                    onDismissRequest()
-                },
-                trailingIcon = {
-                    if (book.status == status) {
-                        Icon(Icons.Default.Check, "Current book status")
+        TextField(
+            value = book.status.name,
+            onValueChange = {},
+            readOnly = true,
+            modifier = Modifier.menuAnchor(),
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+        )
+        ExposedDropdownMenu(onDismissRequest = { onExpandedChange(false) }, expanded = expanded) {
+            BookStatus.entries.forEach { status ->
+                DropdownMenuItem(
+                    text = { Text(status.name) },
+                    onClick = {
+                        onStatusChange(status)
+                        onExpandedChange(false)
+                    },
+                    trailingIcon = {
+                        if (book.status == status) {
+                            Icon(Icons.Default.Check, "Current book status")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
