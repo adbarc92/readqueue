@@ -7,9 +7,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -23,11 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.openbarclay.readqueue.data.db.entity.Book
+import com.openbarclay.readqueue.data.db.entity.BookStatus
 
 @Composable
 fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
     val books by viewModel.books.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
+    var statusDropdownExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
@@ -38,11 +44,22 @@ fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
     ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
             items(books) { book ->
-                Card(modifier = Modifier.fillMaxWidth()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { statusDropdownExpanded = true }) {
                     Column {
                         Text(book.title)
                         Text(book.author)
-                        Text(book.status.name)
+                        BookStatusDropdown(
+                            expanded = statusDropdownExpanded,
+                            book = book,
+                            onDismissRequest = { statusDropdownExpanded = false }
+                        ) { newStatus ->
+                            viewModel.updateStatus(
+                                book.id,
+                                newStatus,
+                            )
+                        }
                     }
                 }
             }
@@ -53,6 +70,34 @@ fun HomeScreen(viewModel: BookListViewModel = hiltViewModel()) {
         AddBookDialog(onDismiss = { showAddDialog = false }, onSave = { title, author ->
             viewModel.addBook(title, author)
         })
+    }
+}
+
+@Composable
+fun BookStatusDropdown(
+    expanded: Boolean,
+    book: Book,
+    onDismissRequest: () -> Unit,
+    onStatusChange: (BookStatus) -> Unit,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { onDismissRequest() }
+    ) {
+        BookStatus.entries.forEach { status ->
+            DropdownMenuItem(
+                text = { Text(status.name) },
+                onClick = {
+                    onStatusChange(status)
+                    onDismissRequest()
+                },
+                trailingIcon = {
+                    if (book.status == status) {
+                        Icon(Icons.Default.Check, "Current book status")
+                    }
+                }
+            )
+        }
     }
 }
 
