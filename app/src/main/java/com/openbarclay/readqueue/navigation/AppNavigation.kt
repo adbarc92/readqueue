@@ -117,15 +117,6 @@ fun AppNavigation() {
                 }
             }
         },
-        floatingActionButton = {
-            if (navController.currentBackStackEntryAsState().value?.destination?.route == "home") {
-                FloatingActionButton(
-                    onClick = { /* Handle add book click */ }
-                ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add Book")
-                }
-            }
-        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
